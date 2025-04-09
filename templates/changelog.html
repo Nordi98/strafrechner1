@@ -1,0 +1,59 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Strafrechner - Changelog</title>
+    <script>
+        function refreshPage() {
+            location.reload();
+        }
+        // Alle 30 Sekunden aktualisieren
+        setInterval(refreshPage, 30000);
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1c1c1c;
+            color: #fff;
+        }
+        .changelog-entry {
+            background: #2c1810;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+        .timestamp {
+            color: #ff6b6b;
+            font-size: 0.9em;
+        }
+        a {
+            color: #ff6b6b;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>📝 Changelog</h1>
+    
+    {% for entry in changelog %}
+    <div class="changelog-entry">
+        <div class="timestamp">{{ entry.timestamp }}</div>
+        <h3>{{ entry.title }}</h3>
+        <p>{{ entry.description }}</p>
+        <ul>
+            {% for change in entry.changes %}
+            <li>{{ change }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endfor %}
+
+    <p><a href="/">← Zurück zum Strafrechner</a></p>
+</body>
+</html>

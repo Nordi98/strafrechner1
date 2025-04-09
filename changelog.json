@@ -1,0 +1,42 @@
+[
+  {
+    "timestamp": "08.04.2024 12:45",
+    "title": "Dark/Light Mode Update",
+    "description": "Dark Mode und Light Mode mit saisonalen Farben implementiert",
+    "changes": [
+      "Dark Mode hinzugefügt",
+      "Light Mode mit saisonalen Farben beibehalten",
+      "Theme Toggle Button hinzugefügt",
+      "Theme-Speicherung im LocalStorage"
+    ]
+  },
+  
+  {
+    "timestamp": "07.04.2024 23:50",
+    "title": "Feedback Update",
+    "description": "Feedback-Formular hinzugefügt",
+    "changes": [
+      "Feedback-Link implementiert",
+      "Google Forms Integration"
+    ]
+  },
+  {
+    "timestamp": "07.04.2024 23:45",
+    "title": "Design & Feature Update",
+    "description": "Saisonales Design und neue Features hinzugefügt",
+    "changes": [
+      "Saisonales Design implementiert (Winter, Frühling, Sommer, Herbst)",
+      "Animierte Dekorationen je nach Jahreszeit",
+      "Changelog-System hinzugefügt",
+      "Statistik-Tracking implementiert",
+      "Bestätigungsdialog beim Berechnen hinzugefügt",
+      "Credits hinzugefügt"
+    ]
+  },
+  {
+    "timestamp": "07.04.2024 23:32",
+    "title": "System Start",
+    "description": "Strafrechner System initialisiert",
+    "changes": ["Grundfunktionen implementiert", "Benutzeroberfläche erstellt"]
+  }
+]

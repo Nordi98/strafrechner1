@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Strafrechner - Statistiken</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1c1c1c;
+            color: #fff;
+        }
+        .stats-box {
+            background: #2c1810;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+        }
+        th {
+            background: #2c1810;
+        }
+        a {
+            color: #ff6b6b;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>📊 Strafrechner Statistiken</h1>
+    
+    <div class="stats-grid">
+        <div class="stats-box">
+            <h3>📁 Gesamtfälle</h3>
+            <p>{{ total_cases }}</p>
+        </div>
+        <div class="stats-box">
+            <h3>💰 Gesamtgeldstrafen</h3>
+            <p>{{ total_money|round(2) }} $</p>
+        </div>
+        <div class="stats-box">
+            <h3>⏱️ Gesamt-Haftzeit</h3>
+            <p>{{ (total_jail_time/60)|round(1) }} Stunden</p>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stats-box">
+            <h3>🤝 Kooperative Fälle</h3>
+            <p>{{ cooperative_cases }} ({{ (cooperative_cases/total_cases*100)|round(1) }}%)</p>
+        </div>
+        <div class="stats-box">
+            <h3>⚖️ Anwaltsfälle</h3>
+            <p>{{ lawyer_cases }} ({{ (lawyer_cases/total_cases*100)|round(1) }}%)</p>
+        </div>
+        <div class="stats-box">
+            <h3>💳 Bezahlte Strafen</h3>
+            <p>{{ paid_cases }} ({{ (paid_cases/total_cases*100)|round(1) }}%)</p>
+        </div>
+    </div>
+
+    <h2>📜 Letzte 10 Fälle</h2>
+    <table>
+        <tr>
+            <th>Zeitpunkt</th>
+            <th>Geldstrafe</th>
+            <th>Haftzeit</th>
+            <th>Details</th>
+        </tr>
+        {% for stat in stats %}
+        <tr>
+            <td>{{ stat.zeitpunkt }}</td>
+            <td>{{ stat.geldstrafe }} $</td>
+            <td>{{ stat.haftzeit }} Min.</td>
+            <td>
+                {% if stat.kooperativ %}🤝{% endif %}
+                {% if stat.anwalt %}⚖️{% endif %}
+                {% if stat.bezahlt %}💳{% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <p><a href="/">← Zurück zum Strafrechner</a></p>
+</body>
+</html>

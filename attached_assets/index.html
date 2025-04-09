@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>POLIZEI TERMINAL // STRAFRECHNER</title>
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #00ff99;
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 20px;
+            animation: flicker 2s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 1; }
+            100% { opacity: 0.98; }
+        }
+
+        h1 {
+            color: #00ff99;
+            text-align: center;
+            font-size: 26px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 5px #00ff99;
+        }
+
+        h2, h3 {
+            border-bottom: 1px solid #00ff99;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+
+        form {
+            background-color: #111;
+            padding: 20px;
+            border: 2px solid #00ff99;
+            border-radius: 10px;
+            box-shadow: 0 0 20px #00ff99;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        input, select, button {
+            background-color: #000;
+            color: #00ff99;
+            border: 1px solid #00ff99;
+            padding: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 4px 0;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #001f1a;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #004d3d;
+            border-color: #00ffaa;
+        }
+
+        .block {
+            margin-bottom: 20px;
+        }
+
+        .result {
+            background-color: #111;
+            border: 2px dashed #00ff99;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 30px;
+            box-shadow: 0 0 15px #00ff99;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0% { box-shadow: 0 0 10px #00ff99; }
+            50% { box-shadow: 0 0 25px #00ff99; }
+            100% { box-shadow: 0 0 10px #00ff99; }
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                to bottom,
+                rgba(0, 255, 153, 0.03),
+                rgba(0, 255, 153, 0.03) 1px,
+                transparent 2px,
+                transparent 4px
+            );
+            animation: scanlines 12s linear infinite;
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔎 POLIZEI-TERMINAL // STRAFRECHNER</h1>
+
+    <form method="post">
+        <div class="block">
+            <h3>⚖️ Wählen Sie die Anzahl der Straftaten</h3>
+            <select name="anzahl_straftaten" onchange="this.form.submit()">
+                <option value="1" {% if anzahl_straftaten == 1 %} selected {% endif %}>1 Straftat</option>
+                <option value="2" {% if anzahl_straftaten == 2 %} selected {% endif %}>2 Straftaten</option>
+                <option value="3" {% if anzahl_straftaten == 3 %} selected {% endif %}>3 Straftaten</option>
+                <option value="4" {% if anzahl_straftaten == 4 %} selected {% endif %}>4 Straftaten</option>
+                <option value="5" {% if anzahl_straftaten == 5 %} selected {% endif %}>5 Straftaten</option>
+                <option value="6" {% if anzahl_straftaten == 6 %} selected {% endif %}>6 Straftaten</option>
+            </select>
+        </div>
+
+        {% for i in range(1, anzahl_straftaten + 1) %}
+            <div class="block">
+                <h3>⮞ Delikt {{ i }}</h3>
+                Mindeststrafe ($): <input type="number" step="0.01" name="geld_min_{{ i }}">
+                Höchststrafe ($): <input type="number" step="0.01" name="geld_max_{{ i }}">
+                Haft-Einheiten (HE): <input type="number" step="0.01" name="he_{{ i }}">
+                Vorstrafen: <input type="number" name="vorstrafen_{{ i }}">
+            </div>
+        {% endfor %}
+
+        <div class="block">
+            Kooperativ? 
+            <select name="kooperativ">
+                <option value="nein">Nein</option>
+                <option value="ja">Ja</option>
+            </select><br>
+
+            Anwalt?
+            <select name="anwalt">
+                <option value="nein">Nein</option>
+                <option value="ja">Ja</option>
+            </select><br>
+
+            Zahlt der Täter?
+            <select name="zahlen">
+                <option value="nein">Nein</option>
+                <option value="ja">Ja</option>
+            </select><br>
+
+            Vorsatz?
+            <select name="vorsatz">
+                <option value="nein">Nein</option>
+                <option value="ja">Ja</option>
+            </select>
+        </div>
+
+        <button type="submit">⏵ STRAFE BERECHNEN</button>
+    </form>
+
+    {% if result %}
+        <div class="result">
+            <h2>📋 BERECHNUNG</h2>
+            <p>💰 Gesamt-Geldstrafe: <strong>{{ result.gesamt_geld }} $</strong></p>
+            <p>⛓️ Gesamt-HE: <strong>{{ result.gesamt_he }}</strong></p>
+            <p>🕑 Haftbeginn: {{ result.haftbeginn }}</p>
+            <p>🕓 Haftende: {{ result.haftende }}</p>
+
+            {% if result.anwalt_ersparnis and result.geld_ohne_anwalt %}
+                <h3>🧑‍⚖️ Anwalt</h3>
+                <p>💸 <strong>Ersparnis durch Anwalt:</strong> {{ result.anwalt_ersparnis }} $</p>
+                <p>🔍 <strong>Geldstrafe ohne Anwalt:</strong> {{ result.geld_ohne_anwalt }} $</p>
+            {% endif %}
+
+            <h3>📦 Einzelstrafen</h3>
+            <ul>
+                {% for e in result.einzelstrafen %}
+                    <li>– Geld: {{ e.geldstrafe }} $ | HE: {{ e.haft }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <audio id="beep" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
+
+    <script>
+        {% if result %}
+            document.getElementById('beep').play();
+        {% endif %}
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
